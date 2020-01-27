@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { signout, isAuthenticated } from '../auth'
 
@@ -14,6 +14,7 @@ const isActive =(history, path) =>{
 }
 
 const Menu = ({history}) =>{
+  //props.history
    return (
      <div>
        <ul className="nav nav-tabs bg-primary">
@@ -23,18 +24,25 @@ const Menu = ({history}) =>{
            </Link>
          </li>
 
-         {isAuthenticated && isAuthenticated().user.role === 0 && (
+         <li className="nav-item">
+           <Link style={isActive(history, "/shop")} className="nav-link" to="/shop">
+             Shop
+           </Link>
+         </li>
+
+         {isAuthenticated() && isAuthenticated().user.role === 0 && (
            <li className="nav-item">
              <Link
                style={isActive(history, "/user/dashboard")}
                className="nav-link"
                to="/user/dashboard"
-             >Dashboard
+             >
+               Dashboard
              </Link>
            </li>
          )}
 
-         {isAuthenticated && isAuthenticated().user.role === 1 && (
+         {isAuthenticated() && isAuthenticated().user.role === 1 && (
            <li className="nav-item">
              <Link
                style={isActive(history, "/admin/dashboard")}
