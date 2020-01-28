@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { signout, isAuthenticated } from '../auth'
+import { itemTotal } from './CartHelpers'
+
 
 
 const isActive =(history, path) =>{
@@ -27,6 +29,13 @@ const Menu = ({history}) =>{
          <li className="nav-item">
            <Link style={isActive(history, "/shop")} className="nav-link" to="/shop">
              Shop
+           </Link>
+         </li>
+
+         
+         <li className="nav-item">
+           <Link style={isActive(history, "/cart")} className="nav-link" to="/cart">
+             Cart <sup><small className="cart-badge">{itemTotal()}</small></sup>
            </Link>
          </li>
 
