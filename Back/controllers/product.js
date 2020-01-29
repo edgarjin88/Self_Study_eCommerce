@@ -58,7 +58,7 @@ exports.create = (req, res) => {
     let product  = new Product(fields); //form data would go into fields; 
     if(files.photo){
       console.log('filesphoto: ', files.photo)
-      if(files.photo.size > 1000000){
+      if(files.photo.size > 10000000){
         return res.status(400).json({
           error: "Image should be less than 1mg in size"
         })
