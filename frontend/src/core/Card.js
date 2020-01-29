@@ -2,29 +2,52 @@ import React, {useState} from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import ShowImage from './ShowImage';
 import moment from 'moment'; 
-import { addItem } from './CartHelpers';
-
-
+import { addItem, updateItem, removeItem } from "./CartHelpers";
 
 
 const Card = ({
   product,
   showViewProductButton = true,
-  showAddToCartButton =true
+  showAddToCartButton =true, 
+  cartUpdate = false,
+  showRemoveProductButton = false,
+  setRun, //default value of function
+  // setRun= f=>  f
+  run=undefined
 }) => {
   const [redirect, setRedirect] = useState(false);
+  const [count, setCount] = useState(product.count);
 
+  const handleChange = productId => e =>{
+    setRun(!run);
+    setCount(e.target.value < 1 ? 1: e.target.value); 
+    if(e.target.value >=1){
+      updateItem(productId, e.target.value); 
+    }
+
+  }
   const showViewButton = () => {
     return (
       showViewProductButton && (
         <Link className="mr-2" to={`/product/${product._id}`}>
-          <button className="btn btn-outline-primary mt-2 mb-4 mr-2">
+          <button className="btn btn-outline-primary mt-2 mb-2 mr-2">
             View Product
           </button>
         </Link>
       )
     );
   };
+
+  const showCartUpdateOptions = cartUpdate =>{
+    return cartUpdate && <div>
+      <div className="input-group mb-3">
+        <div className="input-group-prepend">
+          <span className="input-group-text">Adjust Quantity</span>
+        </div>
+        <input type="number" className="form-control" value={count} onChange={handleChange(product._id)}/>
+      </div>
+    </div>
+  }
 
   const showAddToCart = showAddToCartButton => {
     return showAddToCartButton && (
@@ -33,6 +56,25 @@ const Card = ({
       </button>
     );
   };
+
+  
+  const showRemoveButton = showRemoveProductButton => {
+    return (
+      showRemoveProductButton && (
+        <button
+          onClick={()=>{
+            
+            removeItem(product._id)
+            setRun(!run);
+          }}
+          className="btn btn-outline-danger mt-2 mb-2"
+        >
+          Remove Item
+        </button>
+      )
+    );
+  };
+
 
   const addToCart = () => {
     addItem(product, () => {
@@ -77,6 +119,8 @@ const Card = ({
         <br />
         {showViewButton()}
         {showAddToCart(showAddToCartButton)}
+        {showRemoveButton(showRemoveProductButton)}
+        {showCartUpdateOptions(cartUpdate)}
       </div>
     </div>
   );

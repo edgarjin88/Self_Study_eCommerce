@@ -3,16 +3,23 @@ import Layout from "./Layout";
 import Card from "./Card";
 import { getCart } from "./CartHelpers";
 import { Link } from "react-router-dom";
+import Checkout from "./Checkout";
 
 
 
 
 const Cart = () => {
+  const [run, setRun] = useState(false) // to avoid infinit loop
   const [items, setItems] = useState([]);
 
   useEffect(() => {
     setItems(getCart());
-  }, []);
+  }, [run]);
+
+    // useEffect(() => {
+    //   setItems(getCart());
+    // }, [items]);
+// infinit loop 
 
   const showItems = items =>{
     return (
@@ -21,8 +28,16 @@ const Cart = () => {
         <hr/>
         {items.map((product, i)=>{
           return (
-            <Card key={i} product = {product} showAddToCartButton ={false}/>
-          )
+            <Card
+              cartUpdate={true}
+              key={i}
+              product={product}
+              showRemoveProductButton={true}
+              run={run}
+              setRun={setRun}
+              showAddToCartButton={false}
+            />
+          );
         })}
       </div>
     )
@@ -45,7 +60,11 @@ const Cart = () => {
         </div>
 
         <div className="col-6">
-          <p>Show checkout options/shipping address/total/update quantity</p>
+          
+          <h2 className="mb-4">Your cart summary</h2>
+          <hr/>
+
+          <Checkout products={items}/>
         </div>
 
 

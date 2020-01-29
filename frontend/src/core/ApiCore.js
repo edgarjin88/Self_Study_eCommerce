@@ -90,7 +90,7 @@ export const listRelated = productId => {
          })
            .then(response => {
             //  console.log('response success:', response)
-             return response.json(); //promise return 
+             return response.json(); 
             //  
             // 
 
@@ -100,19 +100,61 @@ export const listRelated = productId => {
            });
        };
 
+export const getBrainTreeClientToken = async (userId, token) => {
+  try {
+    const response = await fetch(`${API}/braintree/getToken/${userId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+    //  console.log('response success:', response)
+    return response.json();
+  }
+  catch (err) {
+    console.log(err);
+  }
+};
 
 
-      //  export const listRelated = productId => {
-      //    return fetch(`${API}/products/related/${productId}`, {
-      //      method: "GET"
-      //    })
-      //      .then(response => {
-      //        //  console.log('response success:', response)
-      //        return response.json(); //promise return
-      //        //
-      //        //
-      //      })
-      //      .catch(err => {
-      //        console.log(err);
-      //      });
-      //  };
+export const processPayment = async (userId, token, paymentData) => {
+  try {
+    const response = await fetch(`${API}/braintree/payment/${userId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body:JSON.stringify(paymentData)
+    });
+    //  console.log('response success:', response)
+    return response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+export const createOrder = async (userId, token, createOrderData) => {
+  try {
+    const response = await fetch(`${API}/order/create/${userId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({order:createOrderData})
+    });
+   
+    return response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+

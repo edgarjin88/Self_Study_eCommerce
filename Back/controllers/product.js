@@ -5,19 +5,22 @@ const { errorHandler } = require("../helpers/dbErrorHandler");
 const fs = require('fs')
 
 exports.productById = (req, res, next, id) =>{
-  Product.findById(id).exec((err, product)=>{
-    if(err || !product){
-      return res.status(400).json({
-        error: "Product not found"
-      });
-    }
-    req.product = product = product;
-    next(); 
-  })
+  Product.findById(id)
+    .populate("category")
+    .exec((err, product) => {
+      if (err || !product) {
+        return res.status(400).json({
+          error: "Product not found"
+        });
+      }
+      req.product = product = product;
+      console.log("product: ", product);
+      next();
+    });
 }
 exports.read=(req, res)=>{
   req.product.photo = undefined // not sending at this point. 
-  return res.json(req.product)
+  return res.json(req.product) // but this is a wrong structure. It should not access photo db from the beginning. 
 }
 
 exports.remove = (req, res) => {
@@ -170,7 +173,9 @@ exports.listRelated= (req, res)=>{
             });
           }
           res.json(products)
+          console.log('listrelated fired :', products)
     })
+
 }
 
 exports.listCategories = (req, res) =>{
@@ -209,8 +214,8 @@ exports.listBySearch = (req, res) => {
         findArgs[key] = req.body.filters[key]; //copying from req to findArg object. 
       }
     }
-  }
-
+  } 
+  //  findArgs updated
   Product.find(findArgs)
     .select("-photo") //except photo
     .populate("category")
@@ -237,4 +242,52 @@ exports.photo = (req, res, next)=>{
   }
   next();
   
+}
+
+
+exports.listSearch = (req, res) =>{
+  //create query object o hold search value and category value. 
+  const query ={}
+  //from frontend ->     list({search: search || undefined, category: category})
+  if(req.query.search){
+    query.name ={$regex: req.query.search, $options: 'i'} //mongodb options, 'i' case insensitive
+    //req.query.search == value, e.g.) "Python"
+    
+    // assign category value to query.category
+    if(req.query.category && req.query.category != 'All'){
+      query.category = req.query.category
+    }
+    //find the product based on query object with 2 properties
+    // search and category. 
+    Product.find(query, (err, products)=>{
+      if(err) {
+        return res.status(400).json({
+          error: errorHandler(err)
+        })
+      }
+      res.json(products) //-photo to be here?
+    }).select("-photo"); // still required??
+  }
+}
+
+
+
+exports.decreaseQuantity = (req, res, next) =>{
+  let bulkOps = req.body.order.products.map((item)=>{
+    return {
+      updateOne: {
+        filter: {_id: item._id},
+        update: {$inc: {quantity: -item.count, sold: +item.count}}
+      }
+    }
+  })
+  console.log('bulk :', bulkOps);
+  Product.bulkWrite(bulkOps, {}, (error, products)=>{
+    if(error){
+      return res.status(400).json({
+        error: "Could not update product"
+      })
+    }
+    next(); 
+  });
 }

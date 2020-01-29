@@ -49,6 +49,7 @@ const Signin = () => {
 
   const signUpform = () => (
     <form>
+      <div className="row"></div>
       <div className="form-group">
         <label className="text-muted">Email</label>
         <input
@@ -109,7 +110,7 @@ const Signin = () => {
   } // redirect. 
 
   return (
-    <Layout title="Sign Up" description="Sign Up">
+    <Layout title="Sign Up" description="Sign Up" className="container col-md-8 offset-md-2">
       {showLoading()}
       {showError()}
       {signUpform()}
