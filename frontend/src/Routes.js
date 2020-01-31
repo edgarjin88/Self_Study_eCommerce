@@ -14,7 +14,9 @@ import Shop from './core/Shop';
 import Product from './core/Product';
 import Cart from './core/Cart';
 import Orders from './admin/Orders';
-import Profile from './user/profile';
+import Profile from './user/Profile';
+import ManageProducts from './admin/ManageProducts';
+
 
 
 
@@ -23,6 +25,7 @@ import Profile from './user/profile';
 // it is about Switch and Route, not normal Router and Link. don't get confused. 
 
 const Routes = () =>{
+  // const userId = isAuthenticated() && isAuthenticated().user._id;
   return (
     <BrowserRouter>
       <Switch>
@@ -39,6 +42,7 @@ const Routes = () =>{
         <AdminRoute path="/create/category" exact component={AddCategory} />
         <AdminRoute path="/create/product" exact component={AddProdduct} />
         <AdminRoute path="/admin/orders" exact component={Orders} />
+        <AdminRoute path="/admin/products" exact component={ManageProducts} />
       </Switch>
     </BrowserRouter>
 
