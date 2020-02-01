@@ -8,3 +8,5 @@ You can find the original code from the udemy lecture from the link blow.
 1. [MERN Stack React Node Ecommerce from Scratch to Deployment ](https://www.udemy.com/course/react-node-ecommerce/)
 
 
+-- Please craete your own .env file. 
+
