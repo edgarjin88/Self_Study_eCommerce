@@ -41,6 +41,7 @@ import { emptyCart } from "./CartHelpers";
     let nonce; 
     // console.log('data 11:', data)
     if(data.instance !== undefined){
+      console.log('data.instance :', data.instance);
           let getNonce = data.instance
             .requestPaymentMethod()
             .then(response => {
