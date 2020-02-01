@@ -1,5 +1,7 @@
 const User = require('../models/user'); 
+const { Order } = require("../models/order");
 
+const {errorHandler} = require('../helpers/dbErrorHandler')
 
 exports.userById = (req, res, next, id) =>{
   User.findById(id).exec((err, user)=>{
@@ -27,6 +29,7 @@ exports.read = (req, res)=>{
 }
 
 exports.update = (req, res)=>{
+  console.log('update fired')
   User.findOneAndUpdate({_id: req.profile._id}, 
     {$set: req.body}, //what ever in req.body would be updated
     {new:true}, //newly updated one would be sent as a JSON
@@ -68,4 +71,21 @@ exports.addOrderToUserHistory = (req, res, next)=>{
       }
       next()
     })
+}
+
+ 
+exports.purchaseHistory = (req, res) =>{
+
+  Order.find({user: req.profile._id})
+  .populate('user', '_id name')
+  .sort('-created')
+  .exec((err, orders)=>{
+    if(err){
+      return res.status(400).json({
+        error: errorHandler(err)
+      });
+    }else{
+      res.json(orders)
+    }
+  })
 }
